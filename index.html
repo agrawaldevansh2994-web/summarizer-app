@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summarizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --accent: #7c6af7;
+      --accent2: #f7a06a;
+      --text: #e8e8f0;
+      --muted: #6b6b88;
+      --success: #4ade80;
+      --error: #f87171;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: linear-gradient(rgba(124, 106, 247, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(124, 106, 247, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: rgba(124, 106, 247, 0.12);
+      top: -100px;
+      right: -100px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(247, 160, 106, 0.08);
+      bottom: -100px;
+      left: -100px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: rgba(124, 106, 247, 0.1);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .badge span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 1rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .tab-btn:not(.active):hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    input[type="url"] {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="url"]:focus {
+      border-color: var(--accent);
+    }
+
+    input::placeholder {
+      color: var(--muted);
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(124, 106, 247, 0.05);
+    }
+
+    .drop-zone input[type="file"] {
+      display: none;
+    }
+
+    .drop-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .drop-text {
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .drop-text strong {
+      color: var(--accent);
+    }
+
+    .file-name {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--success);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .style-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .style-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .style-btn.active {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: rgba(247, 160, 106, 0.08);
+    }
+
+    .style-btn:not(.active):hover {
+      color: var(--text);
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 24px;
+      padding: 16px;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      background: #6b59e8;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading-bar {
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      height: 3px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      animation: slide 1.2s infinite;
+    }
+
+    @keyframes slide {
+      to {
+        left: 100%;
+      }
+    }
+
+    .result-box {
+      margin-top: 28px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: fadeUp 0.4s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: rgba(124, 106, 247, 0.08);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-header span {
+      font-size: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .result-body {
+      padding: 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.875rem;
+      line-height: 1.8;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .result-meta {
+      display: flex;
+      gap: 20px;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .meta-item {
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+    }
+
+    .meta-item strong {
+      color: var(--text);
+    }
+
+    .error-box {
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      background: rgba(248, 113, 113, 0.05);
+      color: var(--error);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="container">
+    <header>
+      <div class="badge"><span></span> Powered by Groq · phi3</div>
+      <h1>Sum<em>marize</em><br>Anything</h1>
+      <p class="subtitle">YouTube videos · PDF documents · Runs 100% locally</p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('youtube')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.1 2.7 12 2.7 12 2.7s-4.1 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v1.9C.7 15.2 1 17.3 1 17.3s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.6 21.5 12 21.5 12 21.5s4.1 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-1.9C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z" />
+        </svg>
+        YouTube
+      </button>
+      <button class="tab-btn" onclick="switchTab('pdf')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+        PDF
+      </button>
+    </div>
+
+    <div class="card">
+      <!-- YOUTUBE -->
+      <div id="youtube-form">
+        <div class="form-group">
+          <label>YouTube URL</label>
+          <input id="yt-url" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+        </div>
+        <div class="divider">Summary style</div>
+        <div class="style-group" id="yt-style-group">
+          <button class="style-btn active" data-style="bullet">• Bullets</button>
+          <button class="style-btn" data-style="paragraph">¶ Paragraph</button>
+          <button class="style-btn" data-style="tldr">⚡ TL;DR</button>
+        </div>
+        <button class="submit-btn" id="yt-submit" onclick="summarizeYouTube()">Summarize Video</button>
+      </div>
+
+      <!-- PDF -->
+      <div id="pdf-form" style="display:none">
+        <div class="form-group">
+          <label>PDF Document</label>
+          <div class="drop-zone" id="drop-zone" onclick="document.getElementById('pdf-input').click()">
+            <input type="file" id="pdf-input" accept=".pdf" onchange="handleFileSelect(this)" />
+            <div class="drop-icon">📄</div>
+            <div class="drop-text"><strong>Click to upload</strong> or drag & drop</div>
+            <div class="drop-text">PDF only · Max 10 MB</div>
+            <div class="file-name" id="file-name"></div>
+          </div>
+        </div>
+        <div class="divider">Summary style</div>
+        <div class="style-group" id="pdf-style-group">
+          <button class="style-btn active" data-style="bullet">• Bullets</button>
+          <button class="style-btn" data-style="paragraph">¶ Paragraph</button>
+          <button class="style-btn" data-style="tldr">⚡ TL;DR</button>
+        </div>
+        <button class="submit-btn" id="pdf-submit" onclick="summarizePDF()">Summarize PDF</button>
+      </div>
+
+      <div class="error-box" id="error-box" style="display:none"></div>
+
+      <div class="result-box" id="result-box" style="display:none">
+        <div class="result-header">
+          <span>Summary</span>
+          <button class="copy-btn" id="copy-btn" onclick="copyResult()">Copy</button>
+        </div>
+        <div class="result-body" id="result-body"></div>
+        <div class="result-meta" id="result-meta"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8000/api";
+    let activeTab = "youtube";
+    let selectedFile = null;
+
+    function switchTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll(".tab-btn").forEach((b, i) => {
+        b.classList.toggle("active", (i === 0 && tab === "youtube") || (i === 1 && tab === "pdf"));
+      });
+      document.getElementById("youtube-form").style.display = tab === "youtube" ? "block" : "none";
+      document.getElementById("pdf-form").style.display = tab === "pdf" ? "block" : "none";
+      clearResults();
+    }
+
+    document.querySelectorAll(".style-group").forEach(group => {
+      group.querySelectorAll(".style-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          group.querySelectorAll(".style-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+    });
+
+    function getStyle(groupId) {
+      return document.querySelector(`#${groupId} .style-btn.active`)?.dataset.style || "bullet";
+    }
+
+    function handleFileSelect(input) {
+      selectedFile = input.files[0];
+      if (selectedFile) document.getElementById("file-name").textContent = `✓ ${selectedFile.name}`;
+    }
+
+    const dropZone = document.getElementById("drop-zone");
+    dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("dragover"); });
+    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+    dropZone.addEventListener("drop", e => {
+      e.preventDefault(); dropZone.classList.remove("dragover");
+      const file = e.dataTransfer.files[0];
+      if (file?.name.endsWith(".pdf")) { selectedFile = file; document.getElementById("file-name").textContent = `✓ ${file.name}`; }
+      else showError("Please drop a PDF file.");
+    });
+
+    async function summarizeYouTube() {
+      const url = document.getElementById("yt-url").value.trim();
+      if (!url) { showError("Please enter a YouTube URL."); return; }
+      const btn = document.getElementById("yt-submit");
+      setLoading(btn, true);
+      clearResults();
+      try {
+        const res = await fetch(`${API_BASE}/youtube/summarize`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, style: getStyle("yt-style-group") }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Something went wrong");
+        showResult(data.summary, [
+          { label: "Video ID", value: data.video_id },
+          { label: "Transcript words", value: data.transcript_length.toLocaleString() },
+          { label: "Style", value: data.style },
+        ]);
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    async function summarizePDF() {
+      if (!selectedFile) { showError("Please select a PDF file first."); return; }
+      const btn = document.getElementById("pdf-submit");
+      setLoading(btn, true);
+      clearResults();
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("style", getStyle("pdf-style-group"));
+      try {
+        const res = await fetch(`${API_BASE}/pdf/summarize`, { method: "POST", body: formData });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Something went wrong");
+        showResult(data.summary, [
+          { label: "File", value: data.filename },
+          { label: "Words", value: data.word_count.toLocaleString() },
+          { label: "Style", value: data.style },
+        ]);
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    function setLoading(btn, on) {
+      btn.disabled = on;
+      btn.innerHTML = on ? `Processing… <div class="loading-bar"></div>` : (activeTab === "youtube" ? "Summarize Video" : "Summarize PDF");
+    }
+
+    function showResult(summary, meta) {
+      document.getElementById("result-box").style.display = "block";
+      document.getElementById("result-body").textContent = summary;
+      document.getElementById("result-meta").innerHTML = meta.map(m => `<span class="meta-item"><strong>${m.value}</strong> ${m.label}</span>`).join("");
+    }
+
+    function showError(msg) {
+      const box = document.getElementById("error-box");
+      box.style.display = "block";
+      box.textContent = `⚠ ${msg}`;
+    }
+
+    function clearResults() {
+      document.getElementById("result-box").style.display = "none";
+      document.getElementById("error-box").style.display = "none";
+    }
+
+    function copyResult() {
+      navigator.clipboard.writeText(document.getElementById("result-body").textContent).then(() => {
+        const btn = document.getElementById("copy-btn");
+        btn.textContent = "Copied!"; btn.classList.add("copied");
+        setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
+      });
+    }
+  </script>
+</body>
+
+</html>
