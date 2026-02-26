@@ -4,7 +4,8 @@ from services.pdf_service import summarize_pdf
 
 router = APIRouter()
 
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+
 
 @router.post("/summarize")
 async def summarize_pdf_endpoint(
@@ -12,15 +13,18 @@ async def summarize_pdf_endpoint(
     style: Literal["bullet", "paragraph", "tldr"] = Form("bullet"),
 ):
     if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+        raise HTTPException(
+            status_code=400, detail="Only PDF files are supported.")
 
     file_bytes = await file.read()
 
     if len(file_bytes) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail="File too large. Max 10 MB.")
+        raise HTTPException(
+            status_code=400, detail="File too large. Max 50 MB.")
 
     try:
-        result = summarize_pdf(file_bytes=file_bytes, filename=file.filename, style=style)
+        result = summarize_pdf(file_bytes=file_bytes,
+                               filename=file.filename, style=style)
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
