@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Summarizer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --bg: #080810;
@@ -15,16 +24,17 @@
       --surface2: #161625;
       --border: #1e1e35;
       --accent: #7c6af7;
-      --accent-dim: rgba(124,106,247,0.12);
+      --accent-dim: rgba(124, 106, 247, 0.12);
       --accent2: #f7a06a;
       --text: #e8e8f0;
       --muted: #5a5a78;
       --success: #4ade80;
       --error: #f87171;
-      --warning: #fbbf24;
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       background: var(--bg);
@@ -34,693 +44,1511 @@
       overflow-x: hidden;
     }
 
-    /* ── Background ── */
     body::before {
       content: '';
-      position: fixed; inset: 0; z-index: 0;
-      background-image:
-        linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: linear-gradient(rgba(124, 106, 247, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(124, 106, 247, 0.03) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
     }
 
-    .orb { position: fixed; border-radius: 50%; filter: blur(140px); pointer-events: none; z-index: 0; transition: all 3s ease; }
-    .orb-1 { width: 600px; height: 600px; background: rgba(124,106,247,0.1); top: -200px; right: -200px; }
-    .orb-2 { width: 400px; height: 400px; background: rgba(247,160,106,0.07); bottom: -100px; left: -100px; }
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(140px);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-    /* ── Layout ── */
+    .orb-1 {
+      width: 600px;
+      height: 600px;
+      background: rgba(124, 106, 247, 0.1);
+      top: -200px;
+      right: -200px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(247, 160, 106, 0.07);
+      bottom: -100px;
+      left: -100px;
+    }
+
     .container {
-      position: relative; z-index: 1;
-      max-width: 820px; margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+      margin: 0 auto;
       padding: 40px 20px 100px;
     }
 
-    /* ── Header ── */
-    header { text-align: center; margin-bottom: 44px; }
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
 
     .badge {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 6px 16px; border-radius: 100px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 16px;
+      border-radius: 100px;
       border: 1px solid var(--border);
       background: var(--accent-dim);
       font-family: 'DM Mono', monospace;
-      font-size: 11px; color: var(--accent);
-      letter-spacing: 0.1em; text-transform: uppercase;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       margin-bottom: 18px;
     }
-    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(0.8)
+      }
+    }
 
     h1 {
       font-size: clamp(2.2rem, 7vw, 4rem);
-      font-weight: 800; line-height: 1.05;
+      font-weight: 800;
+      line-height: 1.05;
       letter-spacing: -0.03em;
     }
-    h1 em { font-style: normal; color: var(--accent); }
-    .subtitle { margin-top: 10px; color: var(--muted); font-size: 0.9rem; font-family: 'DM Mono', monospace; }
 
-    /* ── Tabs ── */
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Tabs */
     .tabs {
-      display: flex; gap: 4px;
+      display: flex;
+      gap: 4px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px; padding: 4px;
+      border-radius: 14px;
+      padding: 4px;
       margin-bottom: 20px;
     }
-    .tab-btn {
-      flex: 1; padding: 11px 8px;
-      border: none; background: transparent;
-      color: var(--muted); font-family: 'Syne', sans-serif;
-      font-size: 0.875rem; font-weight: 600;
-      border-radius: 10px; cursor: pointer;
-      transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-    }
-    .tab-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 20px rgba(124,106,247,0.3); }
-    .tab-btn:not(.active):hover { color: var(--text); background: var(--border); }
 
-    /* ── Card ── */
+    .tab-btn {
+      flex: 1;
+      padding: 11px 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124, 106, 247, 0.3);
+    }
+
+    .tab-btn:not(.active):hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    /* Card */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px; padding: 28px;
+      border-radius: 20px;
+      padding: 28px;
       margin-bottom: 20px;
     }
 
-    /* ── Form ── */
     label {
-      display: block; font-size: 0.72rem; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 8px;
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
     }
 
     input[type="url"] {
-      width: 100%; padding: 13px 16px;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 10px; color: var(--text);
-      font-family: 'DM Mono', monospace; font-size: 0.875rem;
-      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    input[type="url"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,106,247,0.1); }
-    input::placeholder { color: var(--muted); }
-
-    /* ── Drop zone ── */
-    .drop-zone {
-      border: 2px dashed var(--border); border-radius: 12px;
-      padding: 36px 20px; text-align: center; cursor: pointer;
-      transition: all 0.2s; background: var(--bg);
-    }
-    .drop-zone:hover, .drop-zone.dragover {
-      border-color: var(--accent); background: var(--accent-dim);
-    }
-    .drop-zone input[type="file"] { display: none; }
-    .drop-icon { font-size: 1.8rem; margin-bottom: 8px; }
-    .drop-text { color: var(--muted); font-size: 0.85rem; font-family: 'DM Mono', monospace; line-height: 1.6; }
-    .drop-text strong { color: var(--accent); }
-    .file-selected { margin-top: 10px; font-size: 0.8rem; color: var(--success); font-family: 'DM Mono', monospace; }
-
-    /* ── Style selector ── */
-    .divider {
-      display: flex; align-items: center; gap: 10px;
-      margin: 20px 0; color: var(--muted);
-      font-size: 0.7rem; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em;
-    }
-    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    .style-group { display: flex; gap: 8px; }
-    .style-btn {
-      flex: 1; padding: 9px 6px;
-      border: 1px solid var(--border); background: var(--bg);
-      color: var(--muted); border-radius: 8px; cursor: pointer;
-      font-family: 'DM Mono', monospace; font-size: 0.75rem;
-      transition: all 0.2s; text-align: center;
-    }
-    .style-btn.active { border-color: var(--accent2); color: var(--accent2); background: rgba(247,160,106,0.08); }
-    .style-btn:not(.active):hover { color: var(--text); border-color: var(--muted); }
-
-    /* ── Submit button ── */
-    .submit-btn {
-      width: 100%; margin-top: 20px; padding: 15px;
-      background: var(--accent); border: none; border-radius: 12px;
-      color: #fff; font-family: 'Syne', sans-serif;
-      font-size: 0.95rem; font-weight: 700; cursor: pointer;
-      transition: all 0.2s; position: relative; overflow: hidden;
-      box-shadow: 0 4px 20px rgba(124,106,247,0.25);
-    }
-    .submit-btn:hover:not(:disabled) { background: #6b59e8; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,106,247,0.4); }
-    .submit-btn:active:not(:disabled) { transform: translateY(0); }
-    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .loading-bar { position: absolute; bottom: 0; left: -100%; height: 3px; width: 100%; background: rgba(255,255,255,0.5); animation: slide 1s infinite; }
-    @keyframes slide { to { left: 100%; } }
-
-    /* ── Progress steps ── */
-    .progress-steps {
-      display: none; gap: 0;
-      margin-top: 20px; padding: 16px 20px;
-      background: var(--surface2); border-radius: 12px;
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--bg);
       border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .progress-steps.visible { display: flex; }
-    .step {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      gap: 6px; position: relative;
+
+    input[type="url"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 106, 247, 0.1);
     }
-    .step:not(:last-child)::after {
-      content: ''; position: absolute;
-      top: 14px; left: 60%; width: 80%; height: 1px;
-      background: var(--border); z-index: 0;
+
+    input::placeholder {
+      color: var(--muted);
     }
-    .step.done:not(:last-child)::after { background: var(--accent); }
-    .step-icon {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 2px solid var(--border); background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; z-index: 1; transition: all 0.3s;
+
+    /* Drop zone */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .drop-zone input[type="file"] {
+      display: none;
+    }
+
+    .drop-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .drop-text {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-family: 'DM Mono', monospace;
+      line-height: 1.6;
+    }
+
+    .drop-text strong {
+      color: var(--accent);
+    }
+
+    .file-selected {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--success);
       font-family: 'DM Mono', monospace;
     }
-    .step.active .step-icon { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); animation: stepPulse 1s infinite; }
-    .step.done .step-icon { border-color: var(--success); background: rgba(74,222,128,0.1); color: var(--success); }
-    @keyframes stepPulse { 0%,100%{box-shadow:0 0 0 0 rgba(124,106,247,0.3)} 50%{box-shadow:0 0 0 6px rgba(124,106,247,0)} }
-    .step-label { font-size: 0.65rem; color: var(--muted); font-family: 'DM Mono', monospace; text-align: center; }
-    .step.active .step-label, .step.done .step-label { color: var(--text); }
 
-    /* ── Result ── */
+    /* Style selector */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .style-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .style-btn {
+      flex: 1;
+      padding: 9px 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .style-btn.active {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: rgba(247, 160, 106, 0.08);
+    }
+
+    .style-btn:not(.active):hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(124, 106, 247, 0.25);
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: #6b59e8;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .loading-bar {
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      height: 3px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.5);
+      animation: slide 1s infinite;
+    }
+
+    @keyframes slide {
+      to {
+        left: 100%;
+      }
+    }
+
+    /* Progress */
+    .progress-steps {
+      display: none;
+      gap: 0;
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: var(--surface2);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .progress-steps.visible {
+      display: flex;
+    }
+
+    .step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 60%;
+      width: 80%;
+      height: 1px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .step.done:not(:last-child)::after {
+      background: var(--accent);
+    }
+
+    .step-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      z-index: 1;
+      transition: all 0.3s;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .step.active .step-icon {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: var(--accent);
+      animation: stepPulse 1s infinite;
+    }
+
+    .step.done .step-icon {
+      border-color: var(--success);
+      background: rgba(74, 222, 128, 0.1);
+      color: var(--success);
+    }
+
+    @keyframes stepPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(124, 106, 247, 0.3)
+      }
+
+      50% {
+        box-shadow: 0 0 0 6px rgba(124, 106, 247, 0)
+      }
+    }
+
+    .step-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      text-align: center;
+    }
+
+    .step.active .step-label,
+    .step.done .step-label {
+      color: var(--text);
+    }
+
+    /* Result */
     .result-box {
-      border: 1px solid var(--border); border-radius: 16px;
-      overflow: hidden; margin-top: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 20px;
       animation: fadeUp 0.4s ease;
     }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
 
     .result-header {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 12px 18px;
       background: var(--accent-dim);
       border-bottom: 1px solid var(--border);
-      flex-wrap: wrap; gap: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    .result-header-left { display: flex; align-items: center; gap: 8px; }
-    .result-label { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
-    .result-actions { display: flex; gap: 8px; }
+
+    .result-label {
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 8px;
+    }
 
     .action-btn {
-      padding: 5px 12px; border-radius: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
       border: 1px solid var(--border);
-      background: transparent; color: var(--muted);
-      font-family: 'DM Mono', monospace; font-size: 0.72rem;
-      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
     }
-    .action-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .action-btn.success { border-color: var(--success); color: var(--success); }
+
+    .action-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .action-btn.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
 
     .result-body {
-      padding: 22px; font-family: 'DM Mono', monospace;
-      font-size: 0.85rem; line-height: 1.9; color: var(--text);
-      white-space: pre-wrap; max-height: 400px; overflow-y: auto;
+      padding: 22px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: var(--text);
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
     }
-    .result-body::-webkit-scrollbar { width: 4px; }
-    .result-body::-webkit-scrollbar-track { background: transparent; }
-    .result-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .result-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .result-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
 
     .result-meta {
-      display: flex; gap: 16px; flex-wrap: wrap;
-      padding: 10px 18px; border-top: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
       background: var(--bg);
     }
-    .meta-chip {
-      font-size: 0.68rem; font-family: 'DM Mono', monospace;
-      color: var(--muted); display: flex; gap: 4px;
-    }
-    .meta-chip strong { color: var(--text); }
 
-    /* ── Error ── */
+    .meta-chip {
+      font-size: 0.68rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      display: flex;
+      gap: 4px;
+    }
+
+    .meta-chip strong {
+      color: var(--text);
+    }
+
+    /* Error */
     .error-box {
-      margin-top: 16px; padding: 14px 18px;
-      border-radius: 10px; border: 1px solid rgba(248,113,113,0.25);
-      background: rgba(248,113,113,0.05);
-      color: var(--error); font-family: 'DM Mono', monospace;
-      font-size: 0.82rem; line-height: 1.5;
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      background: rgba(248, 113, 113, 0.05);
+      color: var(--error);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
       animation: fadeUp 0.3s ease;
     }
 
-    /* ── History ── */
-    .history-section { margin-top: 32px; }
-    .history-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 14px;
+    /* ── CHAT ── */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 520px;
     }
-    .history-title {
-      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--muted);
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: 10px;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .chat-msg.user {
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
       font-family: 'DM Mono', monospace;
     }
-    .clear-btn {
-      padding: 4px 10px; border-radius: 6px;
-      border: 1px solid var(--border); background: transparent;
-      color: var(--muted); font-family: 'DM Mono', monospace;
-      font-size: 0.68rem; cursor: pointer; transition: all 0.2s;
+
+    .chat-msg.assistant .msg-avatar {
+      background: var(--accent-dim);
+      border: 1px solid rgba(124, 106, 247, 0.3);
+      color: var(--accent);
     }
-    .clear-btn:hover { border-color: var(--error); color: var(--error); }
+
+    .chat-msg.user .msg-avatar {
+      background: rgba(247, 160, 106, 0.1);
+      border: 1px solid rgba(247, 160, 106, 0.3);
+      color: var(--accent2);
+    }
+
+    .msg-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .chat-msg.assistant .msg-bubble {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-top-left-radius: 4px;
+      color: var(--text);
+    }
+
+    .chat-msg.user .msg-bubble {
+      background: var(--accent);
+      color: #fff;
+      border-top-right-radius: 4px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      border-top-left-radius: 4px;
+      width: fit-content;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: typingBounce 1.2s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingBounce {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0)
+      }
+
+      30% {
+        transform: translateY(-6px)
+      }
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+      height: 46px;
+      max-height: 120px;
+      overflow-y: auto;
+      line-height: 1.4;
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent);
+    }
+
+    .chat-input::placeholder {
+      color: var(--muted);
+    }
+
+    .chat-send {
+      padding: 12px 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .chat-send:hover:not(:disabled) {
+      background: #6b59e8;
+    }
+
+    .chat-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .chat-clear {
+      padding: 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .chat-clear:hover {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    .chat-welcome {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .chat-welcome-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .chat-welcome h3 {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .chat-welcome p {
+      font-size: 0.8rem;
+      font-family: 'DM Mono', monospace;
+      line-height: 1.6;
+    }
+
+    .chat-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .suggestion {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+
+    .suggestion:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* History */
+    .history-section {
+      margin-top: 32px;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .history-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .clear-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .clear-btn:hover {
+      border-color: var(--error);
+      color: var(--error);
+    }
 
     .history-empty {
-      text-align: center; padding: 32px;
-      color: var(--muted); font-family: 'DM Mono', monospace;
-      font-size: 0.8rem; border: 1px dashed var(--border);
+      text-align: center;
+      padding: 32px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      border: 1px dashed var(--border);
       border-radius: 12px;
     }
 
-    .history-list { display: flex; flex-direction: column; gap: 10px; }
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
     .history-item {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 14px 16px; cursor: pointer;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
       transition: all 0.2s;
     }
-    .history-item:hover { border-color: var(--accent); background: var(--surface2); }
 
-    .history-item-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
-    .history-item-title { font-size: 0.82rem; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-    .history-item-time { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--muted); white-space: nowrap; }
-    .history-item-preview { font-size: 0.78rem; font-family: 'DM Mono', monospace; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .history-item-badges { display: flex; gap: 6px; margin-top: 8px; }
+    .history-item:hover {
+      border-color: var(--accent);
+    }
+
+    .history-item-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .history-item-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .history-item-time {
+      font-size: 0.68rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .history-item-preview {
+      font-size: 0.78rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-item-badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
     .badge-small {
-      padding: 2px 8px; border-radius: 4px; font-size: 0.65rem;
-      font-family: 'DM Mono', monospace; letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.05em;
     }
-    .badge-yt { background: rgba(255,0,0,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
-    .badge-pdf { background: rgba(124,106,247,0.1); color: var(--accent); border: 1px solid rgba(124,106,247,0.2); }
-    .badge-style { background: rgba(247,160,106,0.1); color: var(--accent2); border: 1px solid rgba(247,160,106,0.2); }
 
-    /* ── Share modal ── */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; z-index: 100;
-      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-      align-items: center; justify-content: center; padding: 20px;
+    .badge-yt {
+      background: rgba(255, 0, 0, 0.1);
+      color: #f87171;
+      border: 1px solid rgba(248, 113, 113, 0.2);
     }
-    .modal-overlay.visible { display: flex; }
+
+    .badge-pdf {
+      background: rgba(124, 106, 247, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(124, 106, 247, 0.2);
+    }
+
+    .badge-style {
+      background: rgba(247, 160, 106, 0.1);
+      color: var(--accent2);
+      border: 1px solid rgba(247, 160, 106, 0.2);
+    }
+
+    /* Share modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
     .modal {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; padding: 28px; max-width: 500px; width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 500px;
+      width: 100%;
       animation: fadeUp 0.3s ease;
     }
-    .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
     .share-text {
-      width: 100%; padding: 12px; background: var(--bg);
-      border: 1px solid var(--border); border-radius: 8px;
-      color: var(--text); font-family: 'DM Mono', monospace;
-      font-size: 0.78rem; resize: none; height: 140px;
-      line-height: 1.6; outline: none;
+      width: 100%;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      resize: none;
+      height: 140px;
+      line-height: 1.6;
+      outline: none;
     }
-    .modal-actions { display: flex; gap: 8px; margin-top: 14px; }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
     .modal-btn {
-      flex: 1; padding: 11px; border-radius: 10px;
-      font-family: 'Syne', sans-serif; font-size: 0.875rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s; border: 1px solid var(--border);
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
     }
-    .modal-btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .modal-btn-primary:hover { background: #6b59e8; }
-    .modal-btn-secondary { background: transparent; color: var(--muted); }
-    .modal-btn-secondary:hover { color: var(--text); }
 
-    /* ── Mobile ── */
+    .modal-btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .modal-btn-primary:hover {
+      background: #6b59e8;
+    }
+
+    .modal-btn-secondary {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    /* Mobile */
     @media (max-width: 600px) {
-      .container { padding: 24px 14px 80px; }
-      h1 { font-size: 2.4rem; }
-      .card { padding: 20px; }
-      .style-group { flex-direction: column; }
-      .result-actions { width: 100%; }
-      .action-btn { flex: 1; text-align: center; }
-      .step-label { display: none; }
-      .result-meta { gap: 10px; }
-      .tabs { gap: 3px; }
-      .tab-btn { font-size: 0.8rem; padding: 10px 6px; }
+      .container {
+        padding: 24px 14px 80px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .style-group {
+        flex-direction: column;
+      }
+
+      .result-actions {
+        width: 100%;
+      }
+
+      .action-btn {
+        flex: 1;
+        text-align: center;
+      }
+
+      .step-label {
+        display: none;
+      }
+
+      .tabs {
+        gap: 2px;
+      }
+
+      .tab-btn {
+        font-size: 0.75rem;
+        padding: 10px 4px;
+        gap: 4px;
+      }
+
+      .msg-bubble {
+        max-width: 90%;
+      }
+
+      .chat-container {
+        height: 460px;
+      }
     }
 
-    .form-group { margin-bottom: 18px; }
+    .form-group {
+      margin-bottom: 18px;
+    }
   </style>
 </head>
+
 <body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
+  <div class="container">
+    <header>
+      <div class="badge"><span class="badge-dot"></span> Groq · Llama 3.3</div>
+      <h1>Sum<em>marize</em><br>& Ask Anything</h1>
+      <p class="subtitle">YouTube · PDF · Chat · Instant · Free</p>
+    </header>
 
-<div class="container">
-  <header>
-    <div class="badge"><span class="badge-dot"></span> Groq · Llama 3.3</div>
-    <h1>Sum<em>marize</em><br>Anything</h1>
-    <p class="subtitle">YouTube · PDF · Instant · Free</p>
-  </header>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('youtube')">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.1 2.7 12 2.7 12 2.7s-4.1 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v1.9C.7 15.2 1 17.3 1 17.3s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.6 21.5 12 21.5 12 21.5s4.1 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-1.9C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/></svg>
-      YouTube
-    </button>
-    <button class="tab-btn" onclick="switchTab('pdf')">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      PDF
-    </button>
-  </div>
-
-  <!-- Main card -->
-  <div class="card">
-
-    <!-- YouTube form -->
-    <div id="youtube-form">
-      <div class="form-group">
-        <label>YouTube URL</label>
-        <input id="yt-url" type="url" placeholder="https://www.youtube.com/watch?v=..." />
-      </div>
-      <div class="divider">Summary style</div>
-      <div class="style-group" id="yt-style-group">
-        <button class="style-btn active" data-style="bullet">• Bullets</button>
-        <button class="style-btn" data-style="paragraph">¶ Paragraph</button>
-        <button class="style-btn" data-style="tldr">⚡ TL;DR</button>
-      </div>
-      <button class="submit-btn" id="yt-submit" onclick="summarizeYouTube()">Summarize Video</button>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('youtube')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.1 2.7 12 2.7 12 2.7s-4.1 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v1.9C.7 15.2 1 17.3 1 17.3s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.6 21.5 12 21.5 12 21.5s4.1 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-1.9C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z" />
+        </svg>
+        YouTube
+      </button>
+      <button class="tab-btn" onclick="switchTab('pdf')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+        PDF
+      </button>
+      <button class="tab-btn" onclick="switchTab('chat')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+        Ask AI
+      </button>
     </div>
 
-    <!-- PDF form -->
-    <div id="pdf-form" style="display:none">
-      <div class="form-group">
-        <label>PDF Document</label>
-        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('pdf-input').click()">
-          <input type="file" id="pdf-input" accept=".pdf" onchange="handleFile(this)" />
-          <div class="drop-icon">📄</div>
-          <div class="drop-text"><strong>Click to upload</strong> or drag & drop<br>PDF only · Max 50 MB</div>
-          <div class="file-selected" id="file-name"></div>
+    <div class="card">
+      <!-- YouTube -->
+      <div id="youtube-form">
+        <div class="form-group">
+          <label>YouTube URL</label>
+          <input id="yt-url" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+        </div>
+        <div class="divider">Summary style</div>
+        <div class="style-group" id="yt-style-group">
+          <button class="style-btn active" data-style="bullet">• Bullets</button>
+          <button class="style-btn" data-style="paragraph">¶ Paragraph</button>
+          <button class="style-btn" data-style="tldr">⚡ TL;DR</button>
+        </div>
+        <button class="submit-btn" id="yt-submit" onclick="summarizeYouTube()">Summarize Video</button>
+      </div>
+
+      <!-- PDF -->
+      <div id="pdf-form" style="display:none">
+        <div class="form-group">
+          <label>PDF Document</label>
+          <div class="drop-zone" id="drop-zone" onclick="document.getElementById('pdf-input').click()">
+            <input type="file" id="pdf-input" accept=".pdf" onchange="handleFile(this)" />
+            <div class="drop-icon">📄</div>
+            <div class="drop-text"><strong>Click to upload</strong> or drag & drop<br>PDF only · Max 50 MB</div>
+            <div class="file-selected" id="file-name"></div>
+          </div>
+        </div>
+        <div class="divider">Summary style</div>
+        <div class="style-group" id="pdf-style-group">
+          <button class="style-btn active" data-style="bullet">• Bullets</button>
+          <button class="style-btn" data-style="paragraph">¶ Paragraph</button>
+          <button class="style-btn" data-style="tldr">⚡ TL;DR</button>
+        </div>
+        <button class="submit-btn" id="pdf-submit" onclick="summarizePDF()">Summarize PDF</button>
+      </div>
+
+      <!-- Chat -->
+      <div id="chat-form" style="display:none">
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-welcome" id="chat-welcome">
+              <div class="chat-welcome-icon">🤖</div>
+              <h3>Ask me anything</h3>
+              <p>Powered by Llama 3.3 via Groq.<br>I can help with reasoning, writing, coding, math, analysis and more.
+              </p>
+              <div class="chat-suggestions">
+                <span class="suggestion" onclick="sendSuggestion(this)">Explain quantum computing</span>
+                <span class="suggestion" onclick="sendSuggestion(this)">Write a Python function</span>
+                <span class="suggestion" onclick="sendSuggestion(this)">What is machine learning?</span>
+                <span class="suggestion" onclick="sendSuggestion(this)">Help me write an email</span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <textarea class="chat-input" id="chat-input" placeholder="Ask anything…" rows="1"
+              onkeydown="chatKeydown(event)"></textarea>
+            <button class="chat-send" id="chat-send" onclick="sendChat()">Send</button>
+            <button class="chat-clear" onclick="clearChat()" title="Clear chat">🗑</button>
+          </div>
         </div>
       </div>
-      <div class="divider">Summary style</div>
-      <div class="style-group" id="pdf-style-group">
-        <button class="style-btn active" data-style="bullet">• Bullets</button>
-        <button class="style-btn" data-style="paragraph">¶ Paragraph</button>
-        <button class="style-btn" data-style="tldr">⚡ TL;DR</button>
-      </div>
-      <button class="submit-btn" id="pdf-submit" onclick="summarizePDF()">Summarize PDF</button>
-    </div>
 
-    <!-- Progress steps -->
-    <div class="progress-steps" id="progress-steps">
-      <div class="step" id="step-1">
-        <div class="step-icon">1</div>
-        <div class="step-label" id="step-1-label">Fetching</div>
+      <!-- Progress -->
+      <div class="progress-steps" id="progress-steps">
+        <div class="step" id="step-1">
+          <div class="step-icon">1</div>
+          <div class="step-label" id="step-1-label">Fetching</div>
+        </div>
+        <div class="step" id="step-2">
+          <div class="step-icon">2</div>
+          <div class="step-label">Processing</div>
+        </div>
+        <div class="step" id="step-3">
+          <div class="step-icon">3</div>
+          <div class="step-label">Done</div>
+        </div>
       </div>
-      <div class="step" id="step-2">
-        <div class="step-icon">2</div>
-        <div class="step-label">Processing</div>
-      </div>
-      <div class="step" id="step-3">
-        <div class="step-icon">3</div>
-        <div class="step-label">Done</div>
-      </div>
-    </div>
 
-    <!-- Error -->
-    <div class="error-box" id="error-box" style="display:none"></div>
+      <div class="error-box" id="error-box" style="display:none"></div>
 
-    <!-- Result -->
-    <div class="result-box" id="result-box" style="display:none">
-      <div class="result-header">
-        <div class="result-header-left">
+      <div class="result-box" id="result-box" style="display:none">
+        <div class="result-header">
           <span class="result-label">Summary</span>
+          <div class="result-actions">
+            <button class="action-btn" id="copy-btn" onclick="copyResult()">Copy</button>
+            <button class="action-btn" onclick="shareResult()">Share</button>
+          </div>
         </div>
-        <div class="result-actions">
-          <button class="action-btn" id="copy-btn" onclick="copyResult()">Copy</button>
-          <button class="action-btn" onclick="shareResult()">Share</button>
-        </div>
+        <div class="result-body" id="result-body"></div>
+        <div class="result-meta" id="result-meta"></div>
       </div>
-      <div class="result-body" id="result-body"></div>
-      <div class="result-meta" id="result-meta"></div>
     </div>
 
-  </div>
-
-  <!-- History -->
-  <div class="history-section">
-    <div class="history-header">
-      <span class="history-title">Recent Summaries</span>
-      <button class="clear-btn" onclick="clearHistory()">Clear all</button>
-    </div>
-    <div id="history-container">
-      <div class="history-empty">No summaries yet — results will appear here</div>
+    <!-- History (only for summarizer tabs) -->
+    <div class="history-section" id="history-section">
+      <div class="history-header">
+        <span class="history-title">Recent Summaries</span>
+        <button class="clear-btn" onclick="clearHistory()">Clear all</button>
+      </div>
+      <div id="history-container">
+        <div class="history-empty">No summaries yet — results will appear here</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Share modal -->
-<div class="modal-overlay" id="share-modal" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-title">Share Summary</div>
-    <textarea class="share-text" id="share-text" readonly></textarea>
-    <div class="modal-actions">
-      <button class="modal-btn modal-btn-primary" onclick="copyShare()">Copy to Clipboard</button>
-      <button class="modal-btn modal-btn-secondary" onclick="closeShareModal()">Close</button>
+  <!-- Share modal -->
+  <div class="modal-overlay" id="share-modal" onclick="closeModal(event)">
+    <div class="modal">
+      <div class="modal-title">Share Summary</div>
+      <textarea class="share-text" id="share-text" readonly></textarea>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-primary" onclick="copyShare()">Copy to Clipboard</button>
+        <button class="modal-btn modal-btn-secondary" onclick="closeShareModal()">Close</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-  // ── CONFIG ────────────────────────────────────────────────────────────────
-  const API_BASE = "https://summarizer-app-production-6921.up.railway.app/api";
+  <script>
+    const API_BASE = "https://summarizer-app-production-6921.up.railway.app/api";
 
-  // ── STATE ─────────────────────────────────────────────────────────────────
-  let activeTab = "youtube";
-  let selectedFile = null;
-  let currentSummary = null;
-  let history = JSON.parse(localStorage.getItem("summaryHistory") || "[]");
+    let activeTab = "youtube";
+    let selectedFile = null;
+    let currentSummary = null;
+    let summaryHistory = JSON.parse(localStorage.getItem("summaryHistory") || "[]");
+    let chatHistory = []; // stays in memory only — resets on refresh
 
-  // ── INIT ──────────────────────────────────────────────────────────────────
-  renderHistory();
-
-  document.querySelectorAll(".style-group").forEach(group => {
-    group.querySelectorAll(".style-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        group.querySelectorAll(".style-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-      });
-    });
-  });
-
-  // ── TABS ──────────────────────────────────────────────────────────────────
-  function switchTab(tab) {
-    activeTab = tab;
-    document.querySelectorAll(".tab-btn").forEach((b, i) => {
-      b.classList.toggle("active", (i===0&&tab==="youtube")||(i===1&&tab==="pdf"));
-    });
-    document.getElementById("youtube-form").style.display = tab==="youtube" ? "block" : "none";
-    document.getElementById("pdf-form").style.display    = tab==="pdf"     ? "block" : "none";
-    clearResults();
-  }
-
-  function getStyle(groupId) {
-    return document.querySelector(`#${groupId} .style-btn.active`)?.dataset.style || "bullet";
-  }
-
-  // ── FILE ──────────────────────────────────────────────────────────────────
-  function handleFile(input) {
-    selectedFile = input.files[0];
-    if (selectedFile) document.getElementById("file-name").textContent = `✓ ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(1)} MB)`;
-  }
-
-  const dropZone = document.getElementById("drop-zone");
-  dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("dragover"); });
-  dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
-  dropZone.addEventListener("drop", e => {
-    e.preventDefault(); dropZone.classList.remove("dragover");
-    const file = e.dataTransfer.files[0];
-    if (file?.name.endsWith(".pdf")) {
-      selectedFile = file;
-      document.getElementById("file-name").textContent = `✓ ${file.name} (${(file.size/1024/1024).toFixed(1)} MB)`;
-    } else showError("Please drop a PDF file.");
-  });
-
-  // ── PROGRESS ──────────────────────────────────────────────────────────────
-  function showProgress(step1Label) {
-    document.getElementById("step-1-label").textContent = step1Label;
-    document.getElementById("progress-steps").classList.add("visible");
-    setStep(1);
-  }
-
-  function setStep(n) {
-    [1,2,3].forEach(i => {
-      const el = document.getElementById(`step-${i}`);
-      el.classList.remove("active","done");
-      if (i < n) el.classList.add("done");
-      else if (i === n) el.classList.add("active");
-    });
-  }
-
-  function hideProgress() {
-    document.getElementById("progress-steps").classList.remove("visible");
-    [1,2,3].forEach(i => {
-      const el = document.getElementById(`step-${i}`);
-      el.classList.remove("active","done");
-    });
-  }
-
-  // ── YOUTUBE ───────────────────────────────────────────────────────────────
-  async function summarizeYouTube() {
-    const url = document.getElementById("yt-url").value.trim();
-    if (!url) { showError("Please enter a YouTube URL."); return; }
-
-    const btn = document.getElementById("yt-submit");
-    setLoading(btn, true);
-    clearResults();
-    showProgress("Fetching transcript");
-
-    // Simulate step progression
-    setTimeout(() => setStep(2), 1500);
-
-    try {
-      const res = await fetch(`${API_BASE}/youtube/summarize`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, style: getStyle("yt-style-group") }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Something went wrong");
-
-      setStep(3);
-      setTimeout(() => {
-        hideProgress();
-        showResult(data.summary, [
-          { label: "Video ID", value: data.video_id },
-          { label: "Words", value: data.transcript_length?.toLocaleString() },
-          { label: "Style", value: data.style },
-        ]);
-        saveHistory({ type: "youtube", title: url, summary: data.summary, style: data.style, meta: data });
-      }, 500);
-
-    } catch (err) {
-      hideProgress();
-      showError(err.message);
-    } finally {
-      setLoading(btn, false);
-    }
-  }
-
-  // ── PDF ───────────────────────────────────────────────────────────────────
-  async function summarizePDF() {
-    if (!selectedFile) { showError("Please select a PDF file first."); return; }
-
-    const btn = document.getElementById("pdf-submit");
-    setLoading(btn, true);
-    clearResults();
-    showProgress("Extracting text");
-
-    setTimeout(() => setStep(2), 2000);
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("style", getStyle("pdf-style-group"));
-
-    try {
-      const res = await fetch(`${API_BASE}/pdf/summarize`, { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Something went wrong");
-
-      setStep(3);
-      setTimeout(() => {
-        hideProgress();
-        showResult(data.summary, [
-          { label: "File", value: data.filename },
-          { label: "Words", value: data.word_count?.toLocaleString() },
-          { label: "Style", value: data.style },
-        ]);
-        saveHistory({ type: "pdf", title: data.filename, summary: data.summary, style: data.style, meta: data });
-      }, 500);
-
-    } catch (err) {
-      hideProgress();
-      showError(err.message);
-    } finally {
-      setLoading(btn, false);
-    }
-  }
-
-  // ── UI HELPERS ────────────────────────────────────────────────────────────
-  function setLoading(btn, on) {
-    btn.disabled = on;
-    btn.innerHTML = on
-      ? `Processing… <div class="loading-bar"></div>`
-      : (activeTab === "youtube" ? "Summarize Video" : "Summarize PDF");
-  }
-
-  function showResult(summary, meta) {
-    currentSummary = { summary, meta };
-    document.getElementById("result-box").style.display = "block";
-    document.getElementById("result-body").textContent = summary;
-    document.getElementById("result-meta").innerHTML = meta
-      .filter(m => m.value)
-      .map(m => `<span class="meta-chip"><strong>${m.value}</strong>&nbsp;${m.label}</span>`)
-      .join("");
-  }
-
-  function showError(msg) {
-    const box = document.getElementById("error-box");
-    box.style.display = "block";
-    box.textContent = `⚠ ${msg}`;
-  }
-
-  function clearResults() {
-    document.getElementById("result-box").style.display = "none";
-    document.getElementById("error-box").style.display = "none";
-    currentSummary = null;
-  }
-
-  function copyResult() {
-    if (!currentSummary) return;
-    navigator.clipboard.writeText(currentSummary.summary).then(() => {
-      const btn = document.getElementById("copy-btn");
-      btn.textContent = "Copied!"; btn.classList.add("success");
-      setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("success"); }, 2000);
-    });
-  }
-
-  // ── SHARE ─────────────────────────────────────────────────────────────────
-  function shareResult() {
-    if (!currentSummary) return;
-    const text = `📋 Summary\n${"─".repeat(40)}\n${currentSummary.summary}\n\n— Generated by Summarizer App`;
-    document.getElementById("share-text").value = text;
-    document.getElementById("share-modal").classList.add("visible");
-  }
-
-  function copyShare() {
-    const text = document.getElementById("share-text").value;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelector(".modal-btn-primary");
-      btn.textContent = "Copied!";
-      setTimeout(() => btn.textContent = "Copy to Clipboard", 2000);
-    });
-  }
-
-  function closeShareModal() {
-    document.getElementById("share-modal").classList.remove("visible");
-  }
-
-  function closeModal(e) {
-    if (e.target === document.getElementById("share-modal")) closeShareModal();
-  }
-
-  // ── HISTORY ───────────────────────────────────────────────────────────────
-  function saveHistory(item) {
-    item.timestamp = Date.now();
-    history.unshift(item);
-    if (history.length > 20) history = history.slice(0, 20);
-    localStorage.setItem("summaryHistory", JSON.stringify(history));
     renderHistory();
-  }
 
-  function renderHistory() {
-    const container = document.getElementById("history-container");
-    if (!history.length) {
-      container.innerHTML = `<div class="history-empty">No summaries yet — results will appear here</div>`;
-      return;
+    document.querySelectorAll(".style-group").forEach(group => {
+      group.querySelectorAll(".style-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          group.querySelectorAll(".style-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+    });
+
+    // ── TABS ──────────────────────────────────────────────────────────────────
+    function switchTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll(".tab-btn").forEach((b, i) => {
+        b.classList.toggle("active", (i === 0 && tab === "youtube") || (i === 1 && tab === "pdf") || (i === 2 && tab === "chat"));
+      });
+      document.getElementById("youtube-form").style.display = tab === "youtube" ? "block" : "none";
+      document.getElementById("pdf-form").style.display = tab === "pdf" ? "block" : "none";
+      document.getElementById("chat-form").style.display = tab === "chat" ? "block" : "none";
+      document.getElementById("history-section").style.display = tab === "chat" ? "none" : "block";
+      document.getElementById("progress-steps").classList.remove("visible");
+
+      if (tab !== "chat") clearResults();
+      else {
+        document.getElementById("result-box").style.display = "none";
+        document.getElementById("error-box").style.display = "none";
+      }
     }
-    container.innerHTML = `<div class="history-list">${history.map((item, i) => `
+
+    function getStyle(groupId) {
+      return document.querySelector(`#${groupId} .style-btn.active`)?.dataset.style || "bullet";
+    }
+
+    // ── FILE ──────────────────────────────────────────────────────────────────
+    function handleFile(input) {
+      selectedFile = input.files[0];
+      if (selectedFile) document.getElementById("file-name").textContent = `✓ ${selectedFile.name} (${(selectedFile.size / 1024 / 1024).toFixed(1)} MB)`;
+    }
+
+    const dropZone = document.getElementById("drop-zone");
+    dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("dragover"); });
+    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+    dropZone.addEventListener("drop", e => {
+      e.preventDefault(); dropZone.classList.remove("dragover");
+      const file = e.dataTransfer.files[0];
+      if (file?.name.endsWith(".pdf")) {
+        selectedFile = file;
+        document.getElementById("file-name").textContent = `✓ ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
+      } else showError("Please drop a PDF file.");
+    });
+
+    // ── PROGRESS ──────────────────────────────────────────────────────────────
+    function showProgress(label) {
+      document.getElementById("step-1-label").textContent = label;
+      document.getElementById("progress-steps").classList.add("visible");
+      setStep(1);
+    }
+    function setStep(n) {
+      [1, 2, 3].forEach(i => {
+        const el = document.getElementById(`step-${i}`);
+        el.classList.remove("active", "done");
+        if (i < n) el.classList.add("done");
+        else if (i === n) el.classList.add("active");
+      });
+    }
+    function hideProgress() {
+      document.getElementById("progress-steps").classList.remove("visible");
+      [1, 2, 3].forEach(i => document.getElementById(`step-${i}`).classList.remove("active", "done"));
+    }
+
+    // ── YOUTUBE ───────────────────────────────────────────────────────────────
+    async function summarizeYouTube() {
+      const url = document.getElementById("yt-url").value.trim();
+      if (!url) { showError("Please enter a YouTube URL."); return; }
+      const btn = document.getElementById("yt-submit");
+      setLoading(btn, true); clearResults(); showProgress("Fetching transcript");
+      setTimeout(() => setStep(2), 1500);
+      try {
+        const res = await fetch(`${API_BASE}/youtube/summarize`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, style: getStyle("yt-style-group") }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Something went wrong");
+        setStep(3);
+        setTimeout(() => {
+          hideProgress();
+          showResult(data.summary, [
+            { label: "Video ID", value: data.video_id },
+            { label: "Words", value: data.transcript_length?.toLocaleString() },
+            { label: "Style", value: data.style },
+          ]);
+          saveHistory({ type: "youtube", title: url, summary: data.summary, style: data.style, meta: data });
+        }, 500);
+      } catch (err) { hideProgress(); showError(err.message); }
+      finally { setLoading(btn, false); }
+    }
+
+    // ── PDF ───────────────────────────────────────────────────────────────────
+    async function summarizePDF() {
+      if (!selectedFile) { showError("Please select a PDF file first."); return; }
+      const btn = document.getElementById("pdf-submit");
+      setLoading(btn, true); clearResults(); showProgress("Extracting text");
+      setTimeout(() => setStep(2), 2000);
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("style", getStyle("pdf-style-group"));
+      try {
+        const res = await fetch(`${API_BASE}/pdf/summarize`, { method: "POST", body: formData });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Something went wrong");
+        setStep(3);
+        setTimeout(() => {
+          hideProgress();
+          showResult(data.summary, [
+            { label: "File", value: data.filename },
+            { label: "Words", value: data.word_count?.toLocaleString() },
+            { label: "Style", value: data.style },
+          ]);
+          saveHistory({ type: "pdf", title: data.filename, summary: data.summary, style: data.style, meta: data });
+        }, 500);
+      } catch (err) { hideProgress(); showError(err.message); }
+      finally { setLoading(btn, false); }
+    }
+
+    // ── CHAT ──────────────────────────────────────────────────────────────────
+    function chatKeydown(e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
+    }
+
+    function sendSuggestion(el) {
+      document.getElementById("chat-input").value = el.textContent;
+      sendChat();
+    }
+
+    async function sendChat() {
+      const input = document.getElementById("chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Hide welcome screen
+      const welcome = document.getElementById("chat-welcome");
+      if (welcome) welcome.remove();
+
+      input.value = "";
+      input.style.height = "46px";
+
+      // Add user message to UI
+      chatHistory.push({ role: "user", content: text });
+      appendMessage("user", text);
+
+      // Show typing indicator
+      const typingEl = appendTyping();
+      document.getElementById("chat-send").disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/chat/message`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: chatHistory }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Something went wrong");
+
+        typingEl.remove();
+        chatHistory.push({ role: "assistant", content: data.reply });
+        appendMessage("assistant", data.reply);
+
+      } catch (err) {
+        typingEl.remove();
+        appendMessage("assistant", `⚠ Error: ${err.message}`);
+      } finally {
+        document.getElementById("chat-send").disabled = false;
+        input.focus();
+      }
+    }
+
+    function appendMessage(role, content) {
+      const container = document.getElementById("chat-messages");
+      const div = document.createElement("div");
+      div.className = `chat-msg ${role}`;
+      div.innerHTML = `
+      <div class="msg-avatar">${role === "assistant" ? "AI" : "Me"}</div>
+      <div class="msg-bubble">${content}</div>
+    `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return div;
+    }
+
+    function appendTyping() {
+      const container = document.getElementById("chat-messages");
+      const div = document.createElement("div");
+      div.className = "chat-msg assistant";
+      div.innerHTML = `
+      <div class="msg-avatar">AI</div>
+      <div class="typing-indicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return div;
+    }
+
+    function clearChat() {
+      chatHistory = [];
+      const container = document.getElementById("chat-messages");
+      container.innerHTML = `
+      <div class="chat-welcome" id="chat-welcome">
+        <div class="chat-welcome-icon">🤖</div>
+        <h3>Ask me anything</h3>
+        <p>Powered by Llama 3.3 via Groq.<br>I can help with reasoning, writing, coding, math, analysis and more.</p>
+        <div class="chat-suggestions">
+          <span class="suggestion" onclick="sendSuggestion(this)">Explain quantum computing</span>
+          <span class="suggestion" onclick="sendSuggestion(this)">Write a Python function</span>
+          <span class="suggestion" onclick="sendSuggestion(this)">What is machine learning?</span>
+          <span class="suggestion" onclick="sendSuggestion(this)">Help me write an email</span>
+        </div>
+      </div>`;
+    }
+
+    // ── UI HELPERS ────────────────────────────────────────────────────────────
+    function setLoading(btn, on) {
+      btn.disabled = on;
+      btn.innerHTML = on ? `Processing… <div class="loading-bar"></div>` : (activeTab === "youtube" ? "Summarize Video" : "Summarize PDF");
+    }
+
+    function showResult(summary, meta) {
+      currentSummary = { summary, meta };
+      document.getElementById("result-box").style.display = "block";
+      document.getElementById("result-body").textContent = summary;
+      document.getElementById("result-meta").innerHTML = meta.filter(m => m.value).map(m => `<span class="meta-chip"><strong>${m.value}</strong>&nbsp;${m.label}</span>`).join("");
+    }
+
+    function showError(msg) {
+      const box = document.getElementById("error-box");
+      box.style.display = "block";
+      box.textContent = `⚠ ${msg}`;
+    }
+
+    function clearResults() {
+      document.getElementById("result-box").style.display = "none";
+      document.getElementById("error-box").style.display = "none";
+      currentSummary = null;
+    }
+
+    function copyResult() {
+      if (!currentSummary) return;
+      navigator.clipboard.writeText(currentSummary.summary).then(() => {
+        const btn = document.getElementById("copy-btn");
+        btn.textContent = "Copied!"; btn.classList.add("success");
+        setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("success"); }, 2000);
+      });
+    }
+
+    function shareResult() {
+      if (!currentSummary) return;
+      document.getElementById("share-text").value = `📋 Summary\n${"─".repeat(40)}\n${currentSummary.summary}\n\n— Summarizer App`;
+      document.getElementById("share-modal").classList.add("visible");
+    }
+
+    function copyShare() {
+      navigator.clipboard.writeText(document.getElementById("share-text").value).then(() => {
+        const btn = document.querySelector(".modal-btn-primary");
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = "Copy to Clipboard", 2000);
+      });
+    }
+
+    function closeShareModal() { document.getElementById("share-modal").classList.remove("visible"); }
+    function closeModal(e) { if (e.target === document.getElementById("share-modal")) closeShareModal(); }
+
+    // ── HISTORY ───────────────────────────────────────────────────────────────
+    function saveHistory(item) {
+      item.timestamp = Date.now();
+      summaryHistory.unshift(item);
+      if (summaryHistory.length > 20) summaryHistory = summaryHistory.slice(0, 20);
+      localStorage.setItem("summaryHistory", JSON.stringify(summaryHistory));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const container = document.getElementById("history-container");
+      if (!summaryHistory.length) {
+        container.innerHTML = `<div class="history-empty">No summaries yet — results will appear here</div>`;
+        return;
+      }
+      container.innerHTML = `<div class="history-list">${summaryHistory.map((item, i) => `
       <div class="history-item" onclick="loadHistory(${i})">
         <div class="history-item-header">
           <div class="history-item-title">${item.title}</div>
@@ -732,35 +1560,35 @@
           <span class="badge-small badge-style">${item.style}</span>
         </div>
       </div>`).join("")}</div>`;
-  }
+    }
 
-  function loadHistory(i) {
-    const item = history[i];
-    clearResults();
-    showResult(item.summary, [
-      { label: item.type === "youtube" ? "Video ID" : "File", value: item.type === "youtube" ? item.meta?.video_id : item.title },
-      { label: "Words", value: item.type === "youtube" ? item.meta?.transcript_length?.toLocaleString() : item.meta?.word_count?.toLocaleString() },
-      { label: "Style", value: item.style },
-    ]);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+    function loadHistory(i) {
+      const item = summaryHistory[i];
+      if (activeTab === "chat") switchTab("youtube");
+      clearResults();
+      showResult(item.summary, [
+        { label: item.type === "youtube" ? "Video ID" : "File", value: item.type === "youtube" ? item.meta?.video_id : item.title },
+        { label: "Words", value: item.type === "youtube" ? item.meta?.transcript_length?.toLocaleString() : item.meta?.word_count?.toLocaleString() },
+        { label: "Style", value: item.style },
+      ]);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
-  function clearHistory() {
-    history = [];
-    localStorage.setItem("summaryHistory", "[]");
-    renderHistory();
-  }
+    function clearHistory() {
+      summaryHistory = [];
+      localStorage.setItem("summaryHistory", "[]");
+      renderHistory();
+    }
 
-  function timeAgo(ts) {
-    const diff = Date.now() - ts;
-    const m = Math.floor(diff / 60000);
-    const h = Math.floor(m / 60);
-    const d = Math.floor(h / 24);
-    if (d > 0) return `${d}d ago`;
-    if (h > 0) return `${h}h ago`;
-    if (m > 0) return `${m}m ago`;
-    return "just now";
-  }
-</script>
+    function timeAgo(ts) {
+      const diff = Date.now() - ts;
+      const m = Math.floor(diff / 60000), h = Math.floor(m / 60), d = Math.floor(h / 24);
+      if (d > 0) return `${d}d ago`;
+      if (h > 0) return `${h}h ago`;
+      if (m > 0) return `${m}m ago`;
+      return "just now";
+    }
+  </script>
 </body>
+
 </html>
