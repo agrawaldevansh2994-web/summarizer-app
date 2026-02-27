@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YT Downloader</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #161625;
+      --border: #1e1e35;
+      --accent: #ff4444;
+      --accent-dim: rgba(255, 68, 68, 0.1);
+      --accent2: #f7a06a;
+      --text: #e8e8f0;
+      --muted: #5a5a78;
+      --success: #4ade80;
+      --error: #f87171;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: linear-gradient(rgba(255, 68, 68, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 68, 68, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(140px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: rgba(255, 68, 68, 0.08);
+      top: -150px;
+      right: -150px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(247, 160, 106, 0.06);
+      bottom: -100px;
+      left: -100px;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .logo {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* URL input */
+    .input-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .url-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+    }
+
+    .url-input::placeholder {
+      color: var(--muted);
+    }
+
+    /* Format selector */
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .format-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .format-card {
+      flex: 1;
+      padding: 16px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+      text-align: center;
+    }
+
+    .format-card:hover {
+      border-color: var(--accent);
+    }
+
+    .format-card.active {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .format-icon {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+
+    .format-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    .format-desc {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-top: 3px;
+    }
+
+    .format-card.active .format-desc {
+      color: var(--accent);
+    }
+
+    /* Quality */
+    .quality-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .quality-btn {
+      flex: 1;
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .quality-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .quality-btn:not(.active):hover {
+      color: var(--text);
+    }
+
+    /* Download button */
+    .download-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(255, 68, 68, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .download-btn:hover:not(:disabled) {
+      background: #e03333;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 30px rgba(255, 68, 68, 0.4);
+    }
+
+    .download-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .download-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading-bar {
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      height: 3px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      animation: slide 1s infinite;
+    }
+
+    @keyframes slide {
+      to {
+        left: 100%;
+      }
+    }
+
+    /* Progress */
+    .progress-wrap {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .progress-wrap.visible {
+      display: block;
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      animation: indeterminate 1.5s infinite;
+    }
+
+    @keyframes indeterminate {
+      0% {
+        margin-left: -30%;
+        width: 30%
+      }
+
+      100% {
+        margin-left: 100%;
+        width: 30%
+      }
+    }
+
+    .progress-label {
+      text-align: center;
+      font-size: 0.78rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* Result */
+    .result {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
+      text-align: center;
+      display: none;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .result.success {
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      background: rgba(74, 222, 128, 0.05);
+    }
+
+    .result.error {
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      background: rgba(248, 113, 113, 0.05);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .result-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .result-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .result.success .result-title {
+      color: var(--success);
+    }
+
+    .result.error .result-title {
+      color: var(--error);
+    }
+
+    .result-sub {
+      font-size: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* Notice */
+    .notice {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      background: rgba(251, 191, 36, 0.04);
+      color: #92836a;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* Quality hidden when mp3 */
+    #quality-wrap {
+      transition: all 0.2s;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="card">
+    <div class="header">
+      <div class="logo">⬇️</div>
+      <h1>YT <em>Down</em>loader</h1>
+      <p class="subtitle">Personal use only · Runs locally</p>
+    </div>
+
+    <!-- URL -->
+    <div class="input-group">
+      <label>YouTube URL</label>
+      <input class="url-input" id="url-input" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+    </div>
+
+    <!-- Format -->
+    <div class="section-label">Format</div>
+    <div class="format-group">
+      <div class="format-card active" id="fmt-mp4" onclick="setFormat('mp4')">
+        <div class="format-icon">🎬</div>
+        <div class="format-name">MP4</div>
+        <div class="format-desc">Video + Audio</div>
+      </div>
+      <div class="format-card" id="fmt-mp3" onclick="setFormat('mp3')">
+        <div class="format-icon">🎵</div>
+        <div class="format-name">MP3</div>
+        <div class="format-desc">Audio · 192kbps</div>
+      </div>
+    </div>
+
+    <!-- Quality (hidden for mp3) -->
+    <div id="quality-wrap">
+      <div class="section-label">Quality</div>
+      <div class="quality-group">
+        <button class="quality-btn" data-q="best" onclick="setQuality(this)">Best</button>
+        <button class="quality-btn active" data-q="720p" onclick="setQuality(this)">720p</button>
+        <button class="quality-btn" data-q="480p" onclick="setQuality(this)">480p</button>
+        <button class="quality-btn" data-q="360p" onclick="setQuality(this)">360p</button>
+      </div>
+    </div>
+
+    <!-- Button -->
+    <button class="download-btn" id="dl-btn" onclick="startDownload()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </svg>
+      Download
+    </button>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progress">
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">Fetching video info…</div>
+    </div>
+
+    <!-- Result -->
+    <div class="result" id="result">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-sub" id="result-sub"></div>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      ⚠ For personal use only · Do not download copyrighted content without permission
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:8001";
+    let selectedFormat = "mp4";
+
+    function setFormat(fmt) {
+      selectedFormat = fmt;
+      document.getElementById("fmt-mp4").classList.toggle("active", fmt === "mp4");
+      document.getElementById("fmt-mp3").classList.toggle("active", fmt === "mp3");
+      document.getElementById("quality-wrap").style.display = fmt === "mp3" ? "none" : "block";
+      hideResult();
+    }
+
+    function setQuality(btn) {
+      document.querySelectorAll(".quality-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    function getQuality() {
+      return document.querySelector(".quality-btn.active")?.dataset.q || "720p";
+    }
+
+    function hideResult() {
+      document.getElementById("result").style.display = "none";
+    }
+
+    async function startDownload() {
+      const url = document.getElementById("url-input").value.trim();
+      if (!url) { showResult("error", "⚠", "Missing URL", "Please paste a YouTube URL above."); return; }
+
+      const btn = document.getElementById("dl-btn");
+      btn.disabled = true;
+      btn.innerHTML = `Processing… <div class="loading-bar"></div>`;
+      hideResult();
+
+      // Show progress
+      const progress = document.getElementById("progress");
+      const progressLabel = document.getElementById("progress-label");
+      progress.classList.add("visible");
+      progressLabel.textContent = selectedFormat === "mp3" ? "Extracting audio…" : "Downloading video…";
+
+      try {
+        const res = await fetch(`${API}/download`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            url,
+            format: selectedFormat,
+            quality: getQuality(),
+          }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.detail || "Download failed");
+        }
+
+        progressLabel.textContent = "Saving file…";
+
+        // Trigger browser download
+        const blob = await res.blob();
+        const disposition = res.headers.get("content-disposition") || "";
+        const match = disposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\n]+)/i);
+        const filename = match ? decodeURIComponent(match[1]) : `download.${selectedFormat}`;
+
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+
+        showResult("success", "✅", "Download started!", `Saved as: ${filename}`);
+
+      } catch (err) {
+        if (err.message.includes("fetch") || err.message.includes("NetworkError")) {
+          showResult("error", "🔌", "Backend not running", "Start uvicorn first:\ncd yt-downloader\\backend\n.\\venv\\Scripts\\activate\nuvicorn main:app --reload");
+        } else {
+          showResult("error", "⚠", "Download failed", err.message);
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download`;
+        progress.classList.remove("visible");
+      }
+    }
+
+    function showResult(type, icon, title, sub) {
+      const el = document.getElementById("result");
+      el.className = `result ${type}`;
+      el.style.display = "block";
+      document.getElementById("result-icon").textContent = icon;
+      document.getElementById("result-title").textContent = title;
+      document.getElementById("result-sub").textContent = sub;
+    }
+
+    // Allow Enter key to trigger download
+    document.getElementById("url-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") startDownload();
+    });
+  </script>
+</body>
+
+</html>
